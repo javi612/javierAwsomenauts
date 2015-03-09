@@ -11,7 +11,12 @@ game.PlayerEntity = me.Entity.extend({
             }
        }]); 
     
-        this.body.setVelocity(5, 20);
+        this.body.setVelocity(20, 20);
+        
+        this.renderable.addAnimation("idle", [78]);
+        this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
+        
+        this.renderable.setCurrentAnimation("idle");
    
     },
     
