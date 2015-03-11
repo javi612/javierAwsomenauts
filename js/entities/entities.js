@@ -10,6 +10,12 @@ game.PlayerEntity = me.Entity.extend({
                     return(new me.Rect(0, 0, 64, 64)).toPolygon();
                 }
             }]);
+            this.broken = false;
+            this.health = 10;
+            this.alwaysUpdate = true;
+            this.body.onCollision = this.onCollision.bind(this);
+            
+            this.type = "PlayerEntity";
 
         //this is the velocity of my character
 
@@ -50,7 +56,7 @@ game.PlayerEntity = me.Entity.extend({
     }
 });
 
-game.PlayerBaseEntity = me.Entity.extend({
+game.EnemyBaseEntity = me.Entity.extend({
     init: function(x, y, settings) {
         this._super(me.Entity, 'init', [x, y, {
                 image: "tower",
@@ -60,8 +66,23 @@ game.PlayerBaseEntity = me.Entity.extend({
                     return (new me.Rect(0, 0, 100, 100)). toPolygon();
                 }
             }]);
+        
+        this.type = "EnemyBaseEntity";
+        
     },
-    update: function() {
-
+    update: function(delta) {
+            if(this.health<=0){
+                this.broken = true;
+            }
+            this.body.update(delta);
+            
+            this._(me.Entity, "update", [delta]);
+            return true;
+    },
+    
+    onCollision: function() {
+        
     }
+    
 });
+
