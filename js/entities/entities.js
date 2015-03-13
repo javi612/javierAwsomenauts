@@ -13,13 +13,12 @@ game.PlayerEntity = me.Entity.extend({
             this.broken = false;
             this.health = 10;
             this.alwaysUpdate = true;
-            this.body.onCollision = this.onCollision.bind(this);
             
             this.type = "PlayerEntity";
 
         //this is the velocity of my character
 
-        this.body.setVelocity(2, 20);
+        this.body.setVelocity(4, 20);
 
         this.renderable.addAnimation("idle", [78]);
         this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
@@ -48,11 +47,16 @@ game.PlayerEntity = me.Entity.extend({
         }
 
 
+            this.body.onCollision = this.onCollision.bind(this);
 
         this.body.update(delta);
 
         this._super(me.Entity, "update", [delta]);
         return true;
+    },
+    
+    onCollision: function(){
+        
     }
 });
 
