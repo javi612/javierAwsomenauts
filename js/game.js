@@ -32,6 +32,7 @@ var game = {
 
 	// Load the resources.
 	me.loader.preload(game.resources);
+        
 
 	// Initialize melonJS and display a loading screen.
 	me.state.change(me.state.LOADING);
@@ -40,6 +41,8 @@ var game = {
 	// Run on game resources loaded.
 	"loaded" : function () {
                 me.pool.register("player", game.PlayerEntity, true);
+                me.pool.register("PlayerBase", game.PlayerBaseEntity);
+                me.pool.register("EnemyBase", game.EnemyBaseEntity);
                 
             
 		me.state.set(me.state.MENU, new game.TitleScreen());
