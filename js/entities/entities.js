@@ -21,6 +21,9 @@ game.PlayerEntity = me.Entity.extend({
         this.body.setVelocity(10, 20);
         //keeps track of which direction your character is going to go
         this.facing = "right";
+        this.now = new Date().getTime();
+        this.lastHit = this.now();
+        this.lastAttack = new Date().getTime();
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
         this.renderable.addAnimation("idle", [78]);
@@ -61,7 +64,6 @@ game.PlayerEntity = me.Entity.extend({
 
         if (me.input.isKeyPressed("attack")) {
             if (!this.renderable.isCurrentAnimation("attack")) {
-                console.log(!this.renderable.isCurrentAnimation("attack"));
                 //Sets current animation to attack and once thats over
                 //goes back to the idle animation
                 this.renderable.setCurrentAnimation("attack", "idle");
@@ -98,6 +100,10 @@ game.PlayerEntity = me.Entity.extend({
                 this.pos.x = this.pos.x +1;
                 
             }
+            
+            if(this.renderable.isCurrentAnimation("attack")){
+                response.b.loseHealth();
+            }
         }
     }
 });
@@ -116,7 +122,7 @@ game.EnemyBaseEntity = me.Entity.extend({
             }]);
 
         this.type = "EnemyBaseEntity";
-
+        this.health = 10;
         this.renderable.addAnimation("idle", [0]);
         this.renderable.addAnimation("broken", [1]);
         this.renderable.setCurrentAnimation("idle");
@@ -134,6 +140,10 @@ game.EnemyBaseEntity = me.Entity.extend({
     },
     onCollision: function() {
 
+    },
+    loseHealth: function(){
+        console.log(this.health);
+        this.health--;
     }
 
 });
@@ -170,6 +180,10 @@ game.PlayerBaseEntity = me.Entity.extend({
     },
     onCollision: function() {
 
+    },
+    
+    loseHealth: function(){
+        this.health--;
     }
 
 });
