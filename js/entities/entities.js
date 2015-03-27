@@ -22,8 +22,8 @@ game.PlayerEntity = me.Entity.extend({
         //keeps track of which direction your character is going to go
         this.facing = "right";
         this.now = new Date().getTime();
-        this.lastHit = this.now();
-        this.lastAttack = new Date().getTime();
+        this.lastHit = this.now;
+        this.lastAttack = new Date().getTime(); //Haven't used this
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
         this.renderable.addAnimation("idle", [78]);
@@ -34,6 +34,7 @@ game.PlayerEntity = me.Entity.extend({
 
     },
     update: function(delta) {
+        this.now = new Date().getTime();
         if (me.input.isKeyPressed("right")) {
             //adds to the position of my x by the velocity defined above in
             //setVelocity() and multiplying it by me.timer.tick.
@@ -101,7 +102,9 @@ game.PlayerEntity = me.Entity.extend({
                 
             }
             
-            if(this.renderable.isCurrentAnimation("attack")){
+            if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= 1000){
+               console.log("tower Hit");
+                this.lastHit = this.now;
                 response.b.loseHealth();
             }
         }
@@ -188,3 +191,25 @@ game.PlayerBaseEntity = me.Entity.extend({
 
 });
 
+game.EnemyCreep = me.Entity.extend({
+    init: function(x, y, settings){
+        
+    },
+    
+    update: function(){
+      this._super(me.Entity, 'init', [x, y, {
+          image: "creep1",
+          width: 32,
+          height: 64,
+          spritewidth: "32",
+          sriteheight: "64",
+          getShape: function(){
+              return (new me.Rect(0, 0, 32, 64)).toPolygon();
+          }
+      }]);  
+    },
+    
+    update: function() {
+        
+    }
+});
