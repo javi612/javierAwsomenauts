@@ -84,7 +84,7 @@ game.PlayerEntity = me.Entity.extend({
         return true;
     },
     collideHandler: function(response) {
-        if (response.b.type === 'EnemyBaseEntity') {
+        if(response.b.type === 'EnemyBaseEntity') {
             var ydif = this.pos.y - response.b.pos.y;
             var xdif = this.pos.x - response.b.pos.x;
 
@@ -194,9 +194,6 @@ game.PlayerBaseEntity = me.Entity.extend({
 
 game.EnemyCreep = me.Entity.extend({
     init: function(x, y, settings) {
-
-    },
-    update: function() {
         this._super(me.Entity, 'init', [x, y, {
                 image: "creep1",
                 width: 32,
@@ -207,26 +204,54 @@ game.EnemyCreep = me.Entity.extend({
                     return (new me.Rect(0, 0, 32, 64)).toPolygon();
                 }
             }]);
+
         this.health = 10;
         this.alwaysUpdate = true;
-        this.setVelocity(3, 20);
+        //this.attacking lets us know if the enemy is currently attacking
+        this.attacking = false;
+        //keeps track of when our creep last attacked anything
+        this.lastAttacking = new Date().getTime();
+        this.lastHit = new Date(). getTime();
+        //keep track of the last time our creep hit anything
+        this.now = new Date().getTime();
+        this.body.setVelocity(10, 20);
         
         this.type = "EnemyCreep";
         
         this.renderable.addAnimation("walk", [3, 4, 5], 80);
-        this.renderable.setCurrentAnimation("walk");
-
+        this.renderable.setCurrentAnimation("walk"); 
+        
     },
-    Update: function(delta) {
+     
+    update: function(delta) {
+        this.now = new Date.getTime();
+        
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
+        
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
+        
         
         this.body.update(delta);
         
+    
         
-        this._super(me.Entity, "update", [delta]);
-        
+        this._super(me.Entity, "update", [delta]);    
         return true;
+    },
+    
+    collideHandler: function(response){
+        if(response.b.type==='PlayerBase'){
+            this.attacking=true;
+            this.lastAttacking=this.now;
+            this.body.vel.x = 0;
+            this.pos.x = this.pos.x + 1;
+            if((this.now-this.listHit >= 1000)){
+                this.lastHit = this.now;
+                response.b.loseHeaalth(1);
+            }
+        }
     }
+    
 });
 
 game.GameManager = Object.extend({
@@ -237,8 +262,8 @@ game.GameManager = Object.extend({
        this.alwaysUpdate = true;
     },
     
-    Update: function(){
-        this.now = new Date().gatTime();
+    update: function(){
+        this.now = new Date().getTime();
         
         if(Math.round(this.now/1000)%10 ===0 && (this.now - this.lastCreep >= 1000)) {
             this.lastCreep = this.now;
