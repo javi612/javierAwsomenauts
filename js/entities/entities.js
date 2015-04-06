@@ -25,6 +25,8 @@ game.PlayerEntity = me.Entity.extend({
         this.facing = "right";
         this.now = new Date().getTime();
         this.lastHit = this.now;
+        this.dead = false;
+        this.attack = game.data.playerAttack;
         this.lastAttack = new Date().getTime(); //Haven't used this
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
@@ -35,8 +37,13 @@ game.PlayerEntity = me.Entity.extend({
         this.renderable.setCurrentAnimation("idle");
 
     },
-    update: function(delta) {
+    update: function(delta) { 
         this.now = new Date().getTime();
+        
+        if (this.health <= 0){
+            this.dead = true;
+        }
+        
         if (me.input.isKeyPressed("right")) {
             //adds to the position of my x by the velocity defined above in
             //setVelocity() and multiplying it by me.timer.tick.
@@ -107,6 +114,13 @@ game.PlayerEntity = me.Entity.extend({
             if (this.renderable.isCurrentAnimation("attack") && this.now - this.lastHit >= game.data.playerAttackTimer ) {
                 console.log("tower Hit");
                 this.lastHit = this.now;
+                //if the creeps health is less than our attack, execute code in if statement
+                if(response.b.health <= game.data.playerAttack){
+                    //adds one gold for a creep kill
+                    game.data.gold += 1;
+                    console.log("Current gold: " + game.data.gold);
+                }
+                
                 response.b.loseHealth();
             }
         }
@@ -322,13 +336,23 @@ game.GameManager = Object.extend({
     init: function(x, y, settings) {
         this.now = new Date().getTime();
         this.lastCreep = new Date().getTime();
-
+        this.paused = false;
         this.alwaysUpdate = true;
     },
     update: function() {
         this.now = new Date().getTime();
+        
+        if(game.data.player.dead){
+            me.game.world.removeChild(game.data.player);
+            me.state.current().resetPlayer(10, 0);
+        }
 
-        if (Math.round(this.now / 1000) % 10 === 0 && (this.now - this.lastCreep >= 1000)) {
+        if (Math.round(this.now / 1000) %20 === 0 && (this.now - this.lastCreep >= 1000)) {
+            game.data.gold  += 1;
+            console.log("Current gold: " + game.data.gold);
+        }
+
+        if (Math.round(this.now / 1000) %10 === 0 && (this.now - this.lastCreep >= 1000)) {
             this.lastCreep = this.now;
             var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
             me.game.world.addChild(creepe, 5);
