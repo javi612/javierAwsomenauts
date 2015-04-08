@@ -1,5 +1,23 @@
 game.PlayerEntity = me.Entity.extend({
     init: function(x, y, settings) {
+        this.setSuper();
+        this.setPlayerTimers();
+        this.setAttributes();
+
+        this.broken = false;
+        this.health = game.data.playerBaseHealth;
+        this.alwaysUpdate = true;
+        this.type = "PlayerEntity";  
+        this.setFlags();        
+       
+        me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
+        
+        this.addAnimation();
+
+        this.renderable.setCurrentAnimation("idle");
+
+    },
+    setSuper: function() {
         this._super(me.Entity, 'init', [x, y, {
                 image: "player",
                 width: 64,
@@ -10,33 +28,32 @@ game.PlayerEntity = me.Entity.extend({
                     return(new me.Rect(0, 0, 64, 64)).toPolygon();
                 }
             }]);
-        this.broken = false;
-        this.health = game.data.playerBaseHealth;
-        this.alwaysUpdate = true;
-
-        this.type = "PlayerEntity";
-
-        //this is the velocity of my character
-
-        this.type = "PlayerEntity";
-        this.health = game.data.playerHealth;
-        this.body.setVelocity(game.data.playerMoveSpeed, 20);
-        //keeps track of which direction your character is going to go
-        this.facing = "right";
+    },
+    
+    setPlayerTimers: function() {
         this.now = new Date().getTime();
         this.lastHit = this.now;
-        this.dead = false;
-        this.attack = game.data.playerAttack;
         this.lastAttack = new Date().getTime(); //Haven't used this
-        me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
-
+    },
+    
+    setAttribute: function() {
+        this.health = game.data.playerHealth;
+        this.body.setVelocity(game.data.playerMoveSpeed, 20);
+        this.attack = game.data.playerAttack;
+    },
+    
+    setFlags: function(){
+        //keeps track of which direction your character is going to go
+        this.facing = "right";
+        this.dead = false;
+    },
+    
+    addAnimation: function(){
         this.renderable.addAnimation("idle", [78]);
         this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
-        this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
-
-        this.renderable.setCurrentAnimation("idle");
-
+        this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);  
     },
+    
     update: function(delta) {
         this.now = new Date().getTime();
 
@@ -64,15 +81,8 @@ game.PlayerEntity = me.Entity.extend({
             this.body.vel.y -= this.body.accel.y * me.timer.tick;
         }
 
-        else if (this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")) {
-            if (!this.renderable.isCurrentAnimation("walk")) {
-                this.renderable.setCurrentAnimation("walk");
-            }
-        } else if (!this.renderable.isCurrentAnimation("attack")) {
-            this.renderable.setCurrentAnimation("idle");
-        }
 
-        if (me.input.isKeyPressed("attack")) {
+        if (me.input.isKeyPressed("attack") && !this.renderable.isCurrentAnimation("attack")) {
             //Sets current animation to attack and once thats over
             //goes back to the idle animation
             this.renderable.setCurrentAnimation("attack", "idle");
@@ -81,7 +91,16 @@ game.PlayerEntity = me.Entity.extend({
             //switched to another animation 
             this.renderable.setAnimationFrame();
         }
-        
+        else if (this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")) {
+            if (!this.renderable.isCurrentAnimation("walk")) {
+                this.renderable.setCurrentAnimation("walk");
+            }
+        } else if (!this.renderable.isCurrentAnimation("attack")) {
+            this.renderable.setCurrentAnimation("idle");
+        }
+
+
+
 
 
 
@@ -90,6 +109,9 @@ game.PlayerEntity = me.Entity.extend({
 
         this._super(me.Entity, "update", [delta]);
         return true;
+    },
+    loseHealth: function(damage) {
+        this.health = this.health - damage;
     },
     collideHandler: function(response) {
         if (response.b.type === 'EnemyBaseEntity') {
