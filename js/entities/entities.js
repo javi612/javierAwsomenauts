@@ -1,4 +1,4 @@
-game.PlayerEntity = me.Entity.extend({
+game.PlayerEntity = me.Entity.extend({  
     init: function(x, y, settings) {
         this.setSuper(x, y);
         this.setPlayerTimers();
@@ -17,6 +17,7 @@ game.PlayerEntity = me.Entity.extend({
         this.renderable.setCurrentAnimation("idle");
 
     },
+    
     setSuper: function(x, y) {
         this._super(me.Entity, 'init', [x, y, {
                 image: "player",
@@ -29,34 +30,36 @@ game.PlayerEntity = me.Entity.extend({
                 }
             }]);
     },
+    
     setPlayerTimers: function() {
         this.now = new Date().getTime();
         this.lastHit = this.now;
         this.lastAttack = new Date().getTime(); //Haven't used this
     },
+    
     setAttributes: function() {
         this.health = game.data.playerHealth;
         this.body.setVelocity(game.data.playerMoveSpeed, 20);
         this.attack = game.data.playerAttack;
     },
+    
     setFlags: function() {
         //keeps track of which direction your character is going to go
         this.facing = "right";
         this.dead = false;
         this.attacking = false;
     },
+    
     addAnimation: function() {
         this.renderable.addAnimation("idle", [78]);
         this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
         this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
     },
+    
     update: function(delta) {
         this.now = new Date().getTime();
-
         this.dead = this.checkIfDead();
-
         this.checkKeyPressesAndMove();
-
         if (this.health <= 0) {
             this.dead = true;
         }
@@ -71,12 +74,14 @@ game.PlayerEntity = me.Entity.extend({
         this._super(me.Entity, "update", [delta]);
         return true;
     },
+    
     checkIfDead: function() {
         if (this.health <= 0) {
             return true;
         }
         return false;
     },
+    
     checkKeyPressesAndMove: function() {
         if (me.input.isKeyPressed("right")) {
             this.moveRight();
@@ -91,6 +96,7 @@ game.PlayerEntity = me.Entity.extend({
             this.jump();
         }
     },
+    
     moveRight: function() {
         //adds to the position of my x by the velocity defined above in
         //setVelocity() and multiplying it by me.timer.tick.
@@ -99,15 +105,18 @@ game.PlayerEntity = me.Entity.extend({
         this.facing = "right";
         this.flipX(true);
     },
+    
     moveLeft: function() {
         this.facing = "left";
         this.body.vel.x -= this.body.accel.x * me.timer.tick;
         this.flipX(false);
     },
+    
     jump: function() {
         this.body.jumping = true;
         this.body.vel.y -= this.body.accel.y * me.timer.tick;
     },
+    
     setAnimations: function() {
         if (me.input.isKeyPressed("attack") && !this.renderable.isCurrentAnimation("attack")) {
             //Sets current animation to attack and once thats over
@@ -126,9 +135,11 @@ game.PlayerEntity = me.Entity.extend({
             this.renderable.setCurrentAnimation("idle");
         }
     },
+    
     loseHealth: function(damage) {
         this.health = this.health - damage;
     },
+    
     collideHandler: function(response) {
         if (response.b.type === 'EnemyBaseEntity') {
             var ydif = this.pos.y - response.b.pos.y;
@@ -162,6 +173,7 @@ game.PlayerEntity = me.Entity.extend({
             }
         }
     }
+    
 });
 
 
