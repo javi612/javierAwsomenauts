@@ -161,6 +161,18 @@ game.PlayerEntity = me.Entity.extend({
                 response.b.loseHealth();
             }
         } else if (response.b.type === 'EnemyCreep') {
+            var xdif = this.pos.x - response.b.pos.x;
+            var ydif = this.pos.y - response.b.pos.y;
+            
+            if (xdif>0){
+                this.pos.x = this.pos.x + 1;
+                if(this.facing==="left"){
+                    this.vel.x = 0;
+                }
+            }else{
+                this.pos.x = this.pos.x - 1;
+            }
+                     
             if (this.renderable.isCurrentAnimation("attack")) {
                 response.b.loseHealth(1);
             }
