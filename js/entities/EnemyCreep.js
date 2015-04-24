@@ -62,7 +62,7 @@ game.EnemyCreep = me.Entity.extend({
             //keeps moving to creep to the right to maintian its position 
             this.pos.x = this.pos.x + 1;
             //checks that it has been at least 1 second since this creep hit a base
-            if ((this.now - this.listHit >= 1000)) {
+            if ((this.now - this.lastHit >= 1000)) {
                 //updates the last hit timer
                 this.lastHit = this.now;
                 //makes the player base call its loseHealth function and passes it a 

@@ -10,8 +10,8 @@ game.PlayerBaseEntity = me.Entity.extend({
                     return (new me.Rect(0, 0, 100, 70)).toPolygon();
                 }
             }]);
-
-        this.type = "PlayerBaseEntity";
+        this.health = 5;
+        this.type = "PlayerBase";
 
         this.renderable.addAnimation("idle", [0]);
         this.renderable.addAnimation("broken", [1]);
@@ -30,6 +30,7 @@ game.PlayerBaseEntity = me.Entity.extend({
         return true;
     },
     loseHealth: function(damage) {
+        console.log(this.health + " " + damage);
         this.health = this.health - damage;
     },
     onCollision: function() {
