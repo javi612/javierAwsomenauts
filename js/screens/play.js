@@ -7,7 +7,6 @@ game.PlayScreen = me.ScreenObject.extend({
         game.data.score = 0;
 
         me.levelDirector.loadLevel("level01");
-
         this.resetPlayer(0, 420);
 
         var gameTimerManager = me.pool.pull("GameTimerManager", 0, 0, {});
