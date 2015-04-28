@@ -32,7 +32,13 @@ var game = {
                 win: "",
                 pausePos: "",
                 buyscreen: "",
-                buytext: ""
+                buytext: "",
+                skill1: 0,
+                skill2: 0,
+                skill3: 0,
+                ability1: 0,
+                ability2: 0,
+                ability3: 0
 	},
 	
 	
