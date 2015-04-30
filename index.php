@@ -1,6 +1,5 @@
-<!DOCTYPE HTML>
 <?php
-    require_once("php/controller/create-db.php");
+    require_once("/php/controller/create-db.php");
 ?>
 <html>
     <head>
@@ -96,16 +95,18 @@
         </script>
         
         <script>
+            //to put the menu
         $("#mainmenu").bind("click", function(){
             me.state.change(me.state.MENU);
-        )};
+        });
         $("#register").bind("click", function(){
-            $ajax({
+            $.ajax({
                type: "POST",
                url: "php/controller/create-user.php",
+               //to put the username and password
                date: {
-                  username: $('#username').val{},
-                  password: $('#password').val{}
+                  username: $('#username').val(),
+                  password: $('#password').val()
                },
                dataType: "text"
             })
@@ -116,26 +117,25 @@
                     alert(response);
                 }        
             })
-            .fail(function(response)){
+            .fail(function(response){
                 alert("Fail");
             });
-        )};
+        });
         $("#load").bind("click", function(){
-            $ajax({
+            $.ajax({
                type: "POST",
                url: "php/controller/login-user.php",
                date: {
-                  username: $('#username').val{},
-                  password: $('#password').val{}
+                  username: $('#username').val(),
+                  password: $('#password').val()
                },
                dataType: "text"
             })
             .success(function(response){
                 if(response==="Invalid username and password"){
                     alert(response);
-                    me.state.change(me.state.PLAY);
                 }else{
-                    var data = jQuery.parseJSON(response);
+                   var data = jQuery.parseJSON(response);
                     game.data.exp = data["exp"];
                     game.data.exp1 = data("exp1");
                     game.data.exp2 = data("exp2");
@@ -144,10 +144,10 @@
                     me.state.change(me.state.SPENDEXP);
                 }        
             })
-            .fail(function(response)){
+            .fail(function(response){
                 alert("Fail");
             });
-        )};
+        });
         </script>
     </body>
 </html>

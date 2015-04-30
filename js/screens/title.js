@@ -20,6 +20,7 @@ game.TitleScreen = me.ScreenObject.extend({
             update: function(dt){
                 return true;
             },
+            // this is to start a new game
             
             newGame: function(){
                 me.input.releasePointerEvent('pointerdown', this);

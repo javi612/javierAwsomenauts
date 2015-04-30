@@ -31,7 +31,8 @@
         }
     }
     else {
-        echo "Invalid username and password";
+        echo "<p>" . $_SESSION["connection"]->error . "</p>";
+        //echo "Invalid username and password";
     }
    
     /*
